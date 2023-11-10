@@ -4,5 +4,10 @@
     <string name="hint_first_number">Unesite prvi broj</string>
     <string name="hint_second_number">Unesite drugi broj</string>
     <string name="result_placeholder">Rezultat će se prikazati ovdje</string>
-
+    <string-array name="operatori">
+        <item>+</item>
+        <item>-</item>
+        <item>*</item>
+        <item>/</item>
+    </string-array>
 </resources>

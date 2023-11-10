@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextNumber1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Unesite prvi broj"
+        android:inputType="numberDecimal"
+        android:padding="12dp" />
+
+    <EditText
+        android:id="@+id/editTextNumber2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unesite drugi broj"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/editTextNumber1"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerOperation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextNumber2"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"/> <!-- Povećajte padding i dimenzije -->
+
+    <Button
+        android:id="@+id/buttonCalculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Izračunaj"
+        android:layout_below="@id/spinnerOperation"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:onClick="calculateResult"/>
+
+    <TextView
+        android:id="@+id/textViewResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rezultat će se prikazati ovdje"
+        android:layout_below="@id/buttonCalculate"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"/>
+</RelativeLayout>

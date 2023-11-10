@@ -7,7 +7,7 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/editTextNumber1"
+        android:id="@+id/unosPrviOperand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -16,12 +16,12 @@
         android:padding="12dp" />
 
     <EditText
-        android:id="@+id/editTextNumber2"
+        android:id="@+id/unosDrugiOperand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Unesite drugi broj"
         android:inputType="numberDecimal"
-        android:layout_below="@id/editTextNumber1"
+        android:layout_below="@id/unosPrviOperand"
         android:layout_marginBottom="16dp"
         android:padding="12dp"/>
 
@@ -29,7 +29,7 @@
         android:id="@+id/spinnerOperation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextNumber2"
+        android:layout_below="@id/unosDrugiOperand"
         android:layout_marginBottom="16dp"
         android:padding="16dp"/> <!-- Povećajte padding i dimenzije -->
 
@@ -51,4 +51,5 @@
         android:layout_below="@id/buttonCalculate"
         android:layout_marginTop="16dp"
         android:padding="12dp"/>
+
 </RelativeLayout>

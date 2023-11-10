@@ -1,80 +1,162 @@
 package hr.unin.kalkulator;
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import java.util.Scanner;
+import static java.lang.Double.parseDouble;
 
-public class CalculatorActivity extends AppCompatActivity {
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.nio.charset.StandardCharsets;
+
+public class CalculatorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+    private double broj1;
+    private double broj2;
+    private double rezultat;
+    private char operacija;
+    Operacija izabranaOperacija;
+    private EditText unosPrviOperand;
+    private EditText unosDrugiOperand;
+    private Spinner spinnerOperation;
+    private Button buttonIzracunaj;
+    private TextView textViewResult;
+
+    //Implementacije listener-a za spinner
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String buffer = (String) adapterView.getItemAtPosition(i);
+        operacija = (char) buffer.getBytes(StandardCharsets.UTF_8)[0];
+        System.out.println(operacija);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        operacija = '+';
+        System.out.println(operacija);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
 
+        //Instanciranje komponenata
 
-        Scanner scanner = new Scanner(System.in);
+        unosPrviOperand = findViewById(R.id.unosPrviOperand);
+        unosDrugiOperand = findViewById(R.id.unosDrugiOperand);
+        spinnerOperation = findViewById(R.id.spinnerOperation);
+        buttonIzracunaj = findViewById(R.id.buttonCalculate);
+        textViewResult = findViewById(R.id.textViewResult);
 
-        System.out.println("Unesite prvi broj:");
-        double broj1 = scanner.nextDouble();
+        //Dodavanje opcija u spinner iz res
 
-        System.out.println("Unesite drugi broj:");
-        double broj2 = scanner.nextDouble();
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.operatori,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerOperation.setAdapter(adapter);
 
-        // Odabir operacije
-        System.out.println("Odaberite operaciju (+, -, *, /):");
-        char operacija = scanner.next().charAt(0);
+        //Vezivanje event-ova
+        unosPrviOperand.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String buffer = String.valueOf(unosPrviOperand.getText()).isEmpty() ?
+                        "0":
+                        String.valueOf(unosPrviOperand.getText());
+                broj1 = parseDouble(buffer);
+                System.out.println(broj1);
+            }
+        });
 
-        Operacija izabranaOperacija = null;
+        unosDrugiOperand.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String buffer = String.valueOf(unosDrugiOperand.getText()).isEmpty() ?
+                        "0":
+                        String.valueOf(unosDrugiOperand.getText());
+                broj2 = parseDouble(buffer);
+                System.out.println(broj2);
+            }
+        });
+        spinnerOperation.setOnItemSelectedListener(this);
+        buttonIzracunaj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                doMath();
+            }
+        });
+    }
 
+
+    protected void doMath(){
+        try {
         switch (operacija) {
             case '+':
-                izabranaOperacija = new Zbrajanje();
+                this.izabranaOperacija = new Zbrajanje();
                 break;
             case '-':
-                izabranaOperacija = new Oduzimanje();
+                this.izabranaOperacija = new Oduzimanje();
                 break;
             case '*':
-                izabranaOperacija = new Mnozenje();
+                this.izabranaOperacija = new Mnozenje();
                 break;
             case '/':
-                izabranaOperacija = new Dijeljenje();
+                this.izabranaOperacija = new Dijeljenje();
                 break;
             default:
-                System.out.println("Nepoznata operacija");
-                System.exit(1);
+                throw new ArithmeticException("Nepoznata operacija!");
+                //System.exit(1);
+        }
+        if (this.izabranaOperacija != null)
+        rezultat = this.izabranaOperacija.izracunaj(broj1, broj2);
+        System.out.println(rezultat);
+        displayResult();
+        } catch (Exception e){
+            System.out.println("Greška: " + e.getMessage());
         }
 
-        double rezultat = izabranaOperacija.izracunaj(broj1, broj2);
-        System.out.println("Rezultat: " + rezultat);
     }
-    // Operacija.java
-    public abstract class Operacija {
-        public abstract double izracunaj(double broj1, double broj2);
+
+    protected void displayResult(){
+        textViewResult.setText(((Double)rezultat).toString());
     }
     // Zbrajanje.java
-    public class Zbrajanje extends Operacija {
-        @Override
+    public class Zbrajanje implements Operacija {
         public double izracunaj(double broj1, double broj2) {
             return broj1 + broj2;
         }
     }
     // Oduzimanje.java
-    public class Oduzimanje extends Operacija {
-        @Override
+    public class Oduzimanje implements Operacija {
         public double izracunaj(double broj1, double broj2) {
             return broj1 - broj2;
         }
     }
     // Mnozenje.java
-    public class Mnozenje extends Operacija {
-        @Override
+    public class Mnozenje implements Operacija {
         public double izracunaj(double broj1, double broj2) {
             return broj1 * broj2;
         }
     }
     // Dijeljenje.java
-    public class Dijeljenje extends Operacija {
-        @Override
-        public double izracunaj(double broj1, double broj2) {
+    public class Dijeljenje implements Operacija {
+        public double izracunaj(double broj1, double broj2) throws ArithmeticException {
             if (broj2 != 0) {
                 return broj1 / broj2;
             } else {
